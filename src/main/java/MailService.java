@@ -4,22 +4,19 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class MailService {
-    private String to;
-    private String subject;
-    private String text;
     private String senderEmail;
     private String senderPassword;
 
-    public MailService(MailObject obj){
-        this.to = obj.getEmail();
-        this.subject = obj.getSubject();
-        this.text = obj.getText();
-        this.senderEmail = obj.getSenderEmail();
-        this.senderPassword = obj.getSenderPassword();
-
+    public MailService(){
+        this.senderEmail = System.getenv("SENDER_MAIL");
+        this.senderPassword = System.getenv("SENDER_PASSWORD");
     }
 
-    public void run() throws MessagingException {
+    public void run(MailObject obj) throws MessagingException {
+        String to = obj.getValue("to");
+        String subject = obj.getValue("subject");
+        String text = obj.getValue("text");
+
         System.out.println("Sending email to " + to);
 
         Session session = createSession();
@@ -33,12 +30,12 @@ public class MailService {
         System.out.println("Done");
     }
 
-    private  void prepareEmailMessage(MimeMessage message, String to, String title, String html)
+    private void prepareEmailMessage(MimeMessage message, String to, String subject, String text)
             throws MessagingException {
-        message.setContent(html, "text/html; charset=utf-8");
+        message.setContent(text, "text/html; charset=utf-8");
         message.setFrom(new InternetAddress(senderEmail));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-        message.setSubject(title);
+        message.setSubject(subject);
     }
 
     private Session createSession(){

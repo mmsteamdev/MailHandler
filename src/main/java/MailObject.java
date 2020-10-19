@@ -1,38 +1,49 @@
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+
 public class MailObject {
-    private String email;
-    private String subject;
-    private String text;
-    private String senderEmail;
-    private String senderPassword;
+    private LinkedHashMap<String, String> jsonDict;
 
     public MailObject(String msg){
-        JSONObject obj = new JSONObject(msg);
-        this.email = obj.getString("email");
-        this.subject = obj.getString("subject");
-        this.text = obj.getString("text");
-        this.senderEmail = obj.getString("senderEmail");
-        this.senderPassword = obj.getString("senderPassword");
+        try {
+            JSONObject obj = new JSONObject(msg);
+            this.jsonDict = new LinkedHashMap<>(obj.length());
+            this.toMap(obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String getEmail() {
-        return email;
+
+    private void toMap(JSONObject obj){
+        Iterator<String> keysItr = obj.keys();
+        while(keysItr.hasNext()) {
+            String key = keysItr.next();
+            String value = obj.getString(key);
+            this.jsonDict.put(key, value);
+        }
     }
 
-    public String getSubject() {
-        return subject;
+    public String getKeysInsert(){
+        StringBuilder returnString= new StringBuilder();
+        for(String key: this.jsonDict.keySet()){
+            returnString.append(key).append(", ");
+        }
+        return returnString.substring(0, returnString.length() - 2);
     }
 
-    public String getText() {
-        return text;
+    public int getJsonDictLen(){
+        return this.jsonDict.size();
     }
 
-    public String getSenderEmail() {
-        return senderEmail;
+    public LinkedHashMap<String, String> getJsonDict() {
+        return jsonDict;
     }
 
-    public String getSenderPassword() {
-        return senderPassword;
+    public String getValue(String key){
+        return this.jsonDict.get(key);
     }
 }
