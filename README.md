@@ -6,6 +6,8 @@ MailHanlder wysyła maila na podstawie danych pobieranych z serwera Http w forma
 - subject - temat maila
 - text - zawartość wiadomości
 
+Dodatkowo można dodać ścieżkę do załącznika w jsonie jako wartość klucza "attachment".
+
 Serwis w responsie na request odsyła "success" bądź "failure" w zależności od wyniku operacji wysyłania maila.
 
 Przykładowy json do wysyłania:
@@ -14,6 +16,7 @@ Przykładowy json do wysyłania:
     "to" : "jan_nowak5@gmail.com",
     "subject" : "temat",
     "text" : "Lorem ipsum."
+    "attachment" : "1.txt"
     }
 
 Przed zbudowaniem obrazu należy uzupełnić w Dockerfile zmienne środowiskowe odpowiedzalne za adres e-mail i hasło do maila. Są to dane adresata maila.

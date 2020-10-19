@@ -6,19 +6,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class MailHandler {
-//    private DataBaseHandler dbHandler;
     private MailService mailService;
 
     public MailHandler(){
-//        this.dbHandler = new DataBaseHandler();
         this.mailService = new MailService();
     }
 
     public void run(){
-        this.createServer();
-    }
-
-    private void createServer(){
         int port = 587;
         try{
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);

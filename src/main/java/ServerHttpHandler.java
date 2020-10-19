@@ -55,7 +55,6 @@ public class ServerHttpHandler implements HttpHandler {
     private void handleResponse(HttpExchange httpExchange, String requestParamValue)  throws  IOException {
         MailObject mail = this.convertJsonToForm(requestParamValue);
         boolean success = this.sendMail(mail);
-//        Boolean success = this.insertIntoDB(form);
 
         OutputStream outputStream = httpExchange.getResponseBody();
         String htmlResponse;
