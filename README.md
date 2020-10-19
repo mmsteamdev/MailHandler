@@ -16,6 +16,10 @@ Przykładowy json do wysyłania:
     "text" : "Lorem ipsum."
     }
 
+Przed zbudowaniem obrazu należy uzupełnić w Dockerfile zmienne środowiskowe odpowiedzalne za adres e-mail i hasło do maila. Są to dane adresata maila.
+
+Jeśli adresatem ma być konto w usłudze Gmail należy wcześniej wejść w `Zarządzanie kontem Google` -> `Bezpieczeństwo` -> `Dostep mniej bezpiecznych aplikacji` i ustawić dostęp na `Włączony`
+
 Komenda do zbudowania:
 
 	docker build -t mail .	
