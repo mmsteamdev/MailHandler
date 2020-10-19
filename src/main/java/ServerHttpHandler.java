@@ -3,7 +3,6 @@ import com.sun.net.httpserver.HttpHandler;
 
 import javax.mail.MessagingException;
 import java.io.*;
-import java.sql.SQLException;
 
 public class ServerHttpHandler implements HttpHandler {
     private MailService mailService;

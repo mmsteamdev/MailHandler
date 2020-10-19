@@ -20,6 +20,7 @@ public class MailService {
         System.out.println("Sending email to " + to);
 
         Session session = createSession();
+        session.setDebug(true);
 
         //create message using session
         MimeMessage message = new MimeMessage(session);
@@ -34,7 +35,7 @@ public class MailService {
             throws MessagingException {
         message.setContent(text, "text/html; charset=utf-8");
         message.setFrom(new InternetAddress(senderEmail));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
         message.setSubject(subject);
     }
 
@@ -44,6 +45,7 @@ public class MailService {
         props.put("mail.smtp.starttls.enable", "true");//TLS must be activated
         props.put("mail.smtp.host", "smtp.gmail.com"); //Outgoing server (SMTP) - change it to your SMTP server
         props.put("mail.smtp.port", "587");//Outgoing port
+        props.put("mail.smtp.ssl.enable", "true");
 
         return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
