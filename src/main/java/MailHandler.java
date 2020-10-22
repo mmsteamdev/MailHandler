@@ -1,62 +1,30 @@
-import javax.mail.MessagingException;
+import com.sun.net.httpserver.HttpServer;
+
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.sql.SQLException;
+import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class MailHandler {
-    private DataBaseHandler dbHandler;
+    private MailService mailService;
 
     public MailHandler(){
-        this.dbHandler = new DataBaseHandler();
+        this.mailService = new MailService();
     }
 
     public void run(){
-        System.out.println("DUPA");
-        MailObject mail = this.convertJsonToForm(this.listenOnPorts());
-        this.insertIntoDB(mail);
-        this.sendMail(mail);
-    }
-
-    private String listenOnPorts(){
-        String message = null;
+        int port = 587;
         try{
-            int port = 4000;
-            ServerSocket serverSocket = new ServerSocket(port);
-            Socket socket = serverSocket.accept();
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            message = (String) ois.readObject();
-            System.out.println("Message: " + message);
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 
-            ois.close();
-            serverSocket.close();
+            server.createContext("/mail", new  ServerHttpHandler(this.mailService));
+            server.setExecutor(threadPoolExecutor);
+            server.start();
+            System.out.println("Server started on port " + port);
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return message;
-    }
-
-    private MailObject convertJsonToForm(String msg){
-        return new MailObject(msg);
-    }
-
-    private void insertIntoDB(MailObject obj){
-        try {
-            this.dbHandler.insertIntoDB(obj);
-        } catch (SQLException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    private void sendMail(MailObject obj){
-        MailService mailService = new MailService(obj);
-        try {
-            mailService.run();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
-
 }
