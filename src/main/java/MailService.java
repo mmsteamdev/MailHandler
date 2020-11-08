@@ -25,7 +25,7 @@ public class MailService {
         System.out.println("Sending email to " + to);
 
         Session session = createSession();
-        session.setDebug(true);
+//        session.setDebug(true);
 
         //create message using session
         MimeMessage message = new MimeMessage(session);
