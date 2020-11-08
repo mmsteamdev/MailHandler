@@ -7,14 +7,10 @@ import java.util.LinkedHashMap;
 public class MailObject {
     private LinkedHashMap<String, String> jsonDict;
 
-    public MailObject(String msg){
-        try {
-            JSONObject obj = new JSONObject(msg);
-            this.jsonDict = new LinkedHashMap<>(obj.length());
-            this.toMap(obj);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public MailObject(String msg) throws JSONException{
+        JSONObject obj = new JSONObject(msg);
+        this.jsonDict = new LinkedHashMap<>(obj.length());
+        this.toMap(obj);
     }
 
 

@@ -16,7 +16,7 @@ public class MailHandler {
         int port = 587;
         try{
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(100);
 
             server.createContext("/mail", new  ServerHttpHandler(this.mailService));
             server.setExecutor(threadPoolExecutor);
