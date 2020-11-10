@@ -40,8 +40,9 @@ public class ServerHttpHandler implements HttpHandler {
         try (InputStream in = httpExchange.getRequestBody()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             StringBuilder msgbuilder = new StringBuilder();
-            while (br.ready()) {
-                msgbuilder.append((char) br.read());
+            int c;
+            while ((c = br.read()) > -1) {
+                msgbuilder.append((char) c);
             }
             message = msgbuilder.toString();
             System.out.println("Message: " + message);
@@ -61,6 +62,11 @@ public class ServerHttpHandler implements HttpHandler {
             htmlResponse = "success";
         }
 
+        httpExchange.getResponseHeaders().add("Access-Control-Allow-Headers","x-prototype-version,x-requested-with");
+        httpExchange.getResponseHeaders().add("Access-Control-Allow-Methods","GET,POST");
+        httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin","*");
+
+        // Create http response
         httpExchange.sendResponseHeaders(200, htmlResponse.length());
         OutputStream outputStream = httpExchange.getResponseBody();
 
