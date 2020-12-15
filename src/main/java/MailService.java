@@ -14,6 +14,7 @@ public class MailService {
     public MailService(){
         this.senderEmail = System.getenv("SENDER_MAIL");
         this.senderPassword = System.getenv("SENDER_PASSWORD");
+        System.out.println(this.senderEmail);
     }
 
     public void run(MailObject obj) throws MessagingException {

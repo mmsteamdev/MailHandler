@@ -10,8 +10,8 @@ FROM openjdk:8-jre-alpine3.9
 # copy only the artifacts we need from the first stage and discard the rest
 COPY --from=MAVEN_BUILD /target/mailhandler-1.0-SNAPSHOT.jar /demo.jar
 #set environmental variables to database
-ENV SENDER_MAIL='mtdmasters@gmail.com'
-ENV SENDER_PASSWORD='Atlantyda'
+#ENV SENDER_MAIL='mtdmasters@gmail.com'
+#ENV SENDER_PASSWORD='Atlantyda'
 #expose ports
 EXPOSE 81
 EXPOSE 587
