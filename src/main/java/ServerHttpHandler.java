@@ -1,67 +1,55 @@
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.json.JSONException;
 
-import javax.mail.MessagingException;
 import java.io.*;
 
 public class ServerHttpHandler implements HttpHandler {
-    private MailService mailService;
+    private ServerPOST serverPOST;
 
     public ServerHttpHandler(MailService mailService){
-        this.mailService = mailService;
+        this.serverPOST = new ServerPOST(mailService);
     }
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        String requestParamValue=null;
-        if("GET".equals(httpExchange.getRequestMethod())) {
-            requestParamValue = handleGetRequest(httpExchange);
-        }else if("POST".equals(httpExchange.getRequestMethod())) {
-            requestParamValue = handlePostRequest(httpExchange);
+        String htmlResponse;
+        switch(httpExchange.getRequestMethod()) {
+            case "GET":
+                htmlResponse = handleGetRequest(httpExchange);
+                break;
+            case "POST":
+                htmlResponse = handlePostRequest(httpExchange);
+                break;
+            default:
+                htmlResponse = "{\"response\" : \"failure\"}";
+                break;
         }
-        handleResponse(httpExchange,requestParamValue);
+        handleResponse(httpExchange, htmlResponse);
     }
     private String handleGetRequest(HttpExchange httpExchange) {
-        return httpExchange.
+        String uri = httpExchange.
                 getRequestURI()
                 .toString()
                 .split("\\?")[1]
                 .split("=")[1];
+        System.out.println(uri);
+        return "{\"response\" : \"failure\"}";
     }
 
     private String handlePostRequest(HttpExchange httpExchange){
-        // get request
-//        Headers reqHeaders = httpExchange.getRequestHeaders();
-//        reqHeaders.forEach((key, value) -> System.out.println(key + ": " + value));
-
-        String message = null;
-        try (InputStream in = httpExchange.getRequestBody()) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            StringBuilder msgbuilder = new StringBuilder();
-            int c;
-            while ((c = br.read()) > -1) {
-                msgbuilder.append((char) c);
-            }
-            message = msgbuilder.toString();
-            System.out.println("Message: " + message);
-            br.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return message;
-    }
-
-    private void handleResponse(HttpExchange httpExchange, String requestParamValue) throws IOException {
-        boolean success = this.convertMsgAndSendMail(requestParamValue);
+        // Get request body
+        String msg = this.parseMsg(httpExchange);
+        boolean success = this.serverPOST.convertMsgAndSendMail(msg);
 
         String htmlResponse = "failure";
         if(success) {
             htmlResponse = "success";
         }
 
+        return htmlResponse;
+    }
+
+    private void handleResponse(HttpExchange httpExchange, String htmlResponse) throws IOException {
         httpExchange.getResponseHeaders().add("Access-Control-Allow-Headers","x-prototype-version,x-requested-with");
         httpExchange.getResponseHeaders().add("Access-Control-Allow-Methods","GET,POST");
         httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin","*");
@@ -75,29 +63,24 @@ public class ServerHttpHandler implements HttpHandler {
         outputStream.close();
     }
 
-    private Boolean convertMsgAndSendMail(String requestParamValue) {
-        try {
-            MailObject mail = this.convertJsonToForm(requestParamValue);
-            return this.sendMail(mail);
-        } catch (JSONException e){
+    private String parseMsg(HttpExchange httpExchange) {
+        String message = null;
+        try (InputStream in = httpExchange.getRequestBody()) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            StringBuilder msg_builder = new StringBuilder();
+            int c;
+            while ((c = br.read()) > -1) {
+                msg_builder.append((char) c);
+            }
+            message = msg_builder.toString();
+            System.out.println("Message: " + message);
+
+        } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
+        return message;
     }
 
-    private MailObject convertJsonToForm(String msg) throws JSONException {
-        return new MailObject(msg);
-    }
-
-    private Boolean sendMail(MailObject obj){
-        try {
-            this.mailService.run(obj);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
 
 
 }
