@@ -14,8 +14,6 @@ public class MailService {
     public MailService(){
         this.senderEmail = System.getenv("SENDER_MAIL");
         this.senderPassword = System.getenv("SENDER_PASSWORD");
-        System.out.println(this.senderEmail);
-        System.out.println(this.senderPassword);
     }
 
     public void run(MailObject obj) throws MessagingException {
@@ -80,7 +78,7 @@ public class MailService {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");//Outgoing server requires authentication
         props.put("mail.smtp.starttls.enable", "true");//TLS must be activated
-        props.put("mail.smtp.host", "smtp.gmail.com"); //Outgoing server (SMTP)
+        props.put("mail.smtp.host", System.getenv("SENDER_SMTP")); //Outgoing server (SMTP)
         props.put("mail.smtp.port", "587");//Outgoing port
         props.put("mail.smtp.ssl.enable", "true");
 
