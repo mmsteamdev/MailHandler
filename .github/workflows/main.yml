@@ -18,3 +18,5 @@
             run: docker build . --file Dockerfile --tag mmsteam/mailhandler:$(date +%s)
           - name: Docker Push
             run: docker push ${{secrets.DOCKER_USER}}/mailhandler     
+
+            
