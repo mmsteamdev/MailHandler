@@ -76,11 +76,11 @@ public class MailService {
 
     private Session createSession(){
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");//Outgoing server requires authentication
-        props.put("mail.smtp.starttls.enable", "true");//TLS must be activated
-        props.put("mail.smtp.host", System.getenv("SENDER_SMTP")); //Outgoing server (SMTP)
-        props.put("mail.smtp.port", "587");//Outgoing port
-        props.put("mail.smtp.ssl.enable", "true");
+        props.put("mail.smtp.auth", System.getenv("SERVER_AUTH"));//Outgoing server requires authentication
+        props.put("mail.smtp.starttls.enable", System.getenv("SERVER_STARTTLS"));//TLS must be activated
+        props.put("mail.smtp.host", System.getenv("SERVER_SMTP")); //Outgoing server (SMTP)
+        props.put("mail.smtp.port", System.getenv("SERVER_OUTGOING_PORT"));//Outgoing port
+        props.put("mail.smtp.ssl.enable", System.getenv("SERVER_SSL"));
 
         return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
