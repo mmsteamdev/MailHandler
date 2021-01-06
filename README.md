@@ -35,4 +35,14 @@ Adres serwisu postawionego lokalnie:
 
 	http://127.0.0.1:587/mail?wsdl
 
+MailHandler do prawidłowego działania potrzebuje zmiennych środowiskowych(w nawiasach podano przykładowe dane):
 
+	  SENDER_MAIL: (jan.nowak@gmail.com)
+      SENDER_PASSWORD: (123456)
+      SERVER_SMTP: (smtp.gmail.com)
+      SERVER_OUTGOING_PORT: (587)
+      SERVER_AUTH: ("true")
+      SERVER_STARTTLS: ("true")
+      SERVER_SSL: ("true")
+      
+     
